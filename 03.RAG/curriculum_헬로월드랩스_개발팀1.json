@@ -1,0 +1,173 @@
+{
+  "overview": {
+    "company": "헬로월드랩스",
+    "department": "개발팀",
+    "audience": "재직자",
+    "topics": [
+      "AI Agent 업무 자동화",
+      "자동화 워크플로우 설계 및 구현"
+    ],
+    "total_hours": 24.0,
+    "days": 3,
+    "hours_per_day": 8.0,
+    "difficulty": "중급",
+    "ax_compass_distribution": {
+      "그룹A": {
+        "types": [
+          "균형형",
+          "이해형"
+        ],
+        "count": 9
+      },
+      "그룹B": {
+        "types": [
+          "과신형",
+          "실행형"
+        ],
+        "count": 15
+      },
+      "그룹C": {
+        "types": [
+          "판단형",
+          "조심형"
+        ],
+        "count": 15
+      }
+    }
+  },
+  "theory_sessions": [
+    {
+      "order": 1,
+      "title": "AI Agent의 기본 개념과 구조",
+      "duration_hours": 4.0,
+      "objective": "AI Agent의 기본 개념과 작동 방식을 이해한다.",
+      "activities": [
+        "AI Agent의 정의와 사례 연구",
+        "AI Agent의 구조 분석"
+      ],
+      "key_concepts": [
+        "AI Agent",
+        "자동화",
+        "기본 개념"
+      ]
+    },
+    {
+      "order": 2,
+      "title": "업무 자동화를 위한 AI Agent의 응용",
+      "duration_hours": 4.0,
+      "objective": "AI Agent를 활용한 업무 자동화 시나리오를 파악한다.",
+      "activities": [
+        "업무 자동화 사례 분석",
+        "자동화 도구 비교"
+      ],
+      "key_concepts": [
+        "업무 자동화",
+        "AI Agent 응용",
+        "시나리오"
+      ]
+    },
+    {
+      "order": 3,
+      "title": "자동화 워크플로우 설계 방법론",
+      "duration_hours": 3.0,
+      "objective": "효율적인 자동화 워크플로우를 설계하는 방법을 익힌다.",
+      "activities": [
+        "워크플로우 설계 기법 소개",
+        "설계 툴 사용법"
+      ],
+      "key_concepts": [
+        "워크플로우",
+        "설계 방법론",
+        "효율성"
+      ]
+    }
+  ],
+  "practice_sessions": {
+    "그룹A": [
+      {
+        "order": 1,
+        "title": "AI Agent를 활용한 균형적 자동화 프로젝트",
+        "duration_hours": 4.0,
+        "objective": "AI Agent를 활용하여 균형 있는 자동화 시스템을 구현한다.",
+        "activities": [
+          "균형적 자동화 프로세스 설계",
+          "실제 구현 및 테스트"
+        ],
+        "ax_type_rationale": "균형형과 이해형은 안정성과 이해를 중시하므로 균형적인 접근이 필요하다."
+      },
+      {
+        "order": 2,
+        "title": "AI Agent 이해 심화 실습",
+        "duration_hours": 3.0,
+        "objective": "AI Agent의 고급 기능을 이해하고 적용한다.",
+        "activities": [
+          "고급 기능 탐색",
+          "적용 사례 연구"
+        ],
+        "ax_type_rationale": "이해형은 심층적 이해를 통해 문제 해결 능력을 강화한다."
+      }
+    ],
+    "그룹B": [
+      {
+        "order": 1,
+        "title": "AI Agent 기반의 빠른 실행 자동화 프로젝트",
+        "duration_hours": 4.0,
+        "objective": "빠르게 실행 가능한 자동화 시스템을 설계하고 구축한다.",
+        "activities": [
+          "신속한 프로세스 설계",
+          "시스템 구축 및 실행"
+        ],
+        "ax_type_rationale": "과신형과 실행형은 빠른 실행과 실용적 접근을 선호한다."
+      },
+      {
+        "order": 2,
+        "title": "실행형 AI Agent 실습",
+        "duration_hours": 3.0,
+        "objective": "AI Agent의 실행 효율성을 높이는 방법을 학습한다.",
+        "activities": [
+          "효율성 극대화 전략 개발",
+          "실제 사례 적용"
+        ],
+        "ax_type_rationale": "실행형은 실질적 결과를 중시하므로 효율성을 높이는 실습이 필요하다."
+      }
+    ],
+    "그룹C": [
+      {
+        "order": 1,
+        "title": "AI Agent를 활용한 위험 관리 자동화 프로젝트",
+        "duration_hours": 4.0,
+        "objective": "위험 요소를 최소화하는 자동화 시스템을 설계한다.",
+        "activities": [
+          "위험 분석 및 관리 프로세스 설계",
+          "위험 완화 전략 테스트"
+        ],
+        "ax_type_rationale": "판단형과 조심형은 위험 요소를 고려한 신중한 접근을 선호한다."
+      },
+      {
+        "order": 2,
+        "title": "조심형 AI Agent 실습",
+        "duration_hours": 3.0,
+        "objective": "AI Agent의 안정성을 높이는 방법을 학습한다.",
+        "activities": [
+          "안정성 강화 기법 개발",
+          "적용 사례 분석"
+        ],
+        "ax_type_rationale": "조심형은 안정성과 신중함을 중시하므로 안정성을 높이는 실습이 필요하다."
+      }
+    ]
+  },
+  "expected_outcomes": [
+    "AI Agent의 기본 개념과 구조를 이해한다.",
+    "업무 자동화 시나리오를 설계하고 구현할 수 있다.",
+    "효율적이고 안정적인 자동화 워크플로우를 구축한다.",
+    "AX Compass 유형에 맞는 자동화 프로젝트를 수행한다."
+  ],
+  "prerequisites": [
+    "기본적인 프로그래밍 지식",
+    "AI 및 머신러닝의 기본 이해"
+  ],
+  "rag_references": [
+    "AX Compass 유형 특성 문서",
+    "AI Agent 자동화 커리큘럼 설계 문서"
+  ]
+}
