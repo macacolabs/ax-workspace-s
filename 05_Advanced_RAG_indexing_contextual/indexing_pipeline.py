@@ -114,6 +114,7 @@ class PDFParser(DocumentParser):
         (1, re.compile(r"^(\d+\.\s+[^\d].{0,60})$")),
         (2, re.compile(r"^(\d+\.\d+\s+.{1,60})$")),
         (3, re.compile(r"^(\d+\.\d+\.\d+\s+.{1,60})$")),
+        (2, re.compile(r"^(\d+\)\s+.{1,40})$")),           # 1) heading 형식
         (1, re.compile(r"^([A-Z][A-Z\s]{3,50}[A-Z])$")),  # ALL CAPS
     ]
 
@@ -133,11 +134,77 @@ class PDFParser(DocumentParser):
             raw = page.extract_text() or ""
             if not raw.strip():
                 continue
+            raw = self._normalize_char_spaced(raw)
             sections.extend(self._split_page(raw, page_num))
 
-        return self._merge_short_sections(sections, min_chars=200)
+        return self._merge_short_sections(sections, min_chars=100)
 
     # ── 내부 헬퍼 ─────────────────────────────────────────────────────────────
+
+    @staticmethod
+    def _normalize_char_spaced(text: str) -> str:
+        """pypdf 글자별 줄바꿈 텍스트를 단어 단위로 재조합.
+
+        'A\\nX\\n \\nC\\no\\nm\\np\\na\\ns\\ns' → 'AX Compass'
+        단일 문자 비율이 50% 미만이면 원본 반환 (일반 PDF).
+
+        공백 문자(' ')는 단어 구분자, 빈 줄('')은 문단 구분자로 처리.
+        """
+        lines = text.splitlines()
+        non_empty = [l for l in lines if l.strip()]
+        if not non_empty:
+            return text
+        single_ratio = sum(1 for l in non_empty if len(l.strip()) <= 1) / len(non_empty)
+        if single_ratio < 0.5:
+            return text
+
+        # buf: 현재 accumulating 중인 글자들 (공백 없는 연속 글자)
+        # parts: (type, value) — type은 "word" | "space" | "para"
+        buf: list[str] = []
+        parts: list[tuple[str, str]] = []
+
+        def flush_buf() -> None:
+            if buf:
+                parts.append(("word", "".join(buf)))
+                buf.clear()
+
+        for line in lines:
+            if len(line) == 0:          # 진짜 빈 줄 → 문단 구분
+                flush_buf()
+                parts.append(("para", ""))
+            elif line.strip() == "":    # 공백만 있는 줄 → 단어 구분
+                flush_buf()
+                parts.append(("space", " "))
+            elif len(line.strip()) == 1:  # 단일 글자
+                buf.append(line.strip())
+            else:                       # 여러 글자 (multi-char token)
+                flush_buf()
+                parts.append(("word", line.strip()))
+
+        flush_buf()
+
+        # parts → 최종 문자열 조합
+        result: list[str] = []
+        pending_space = False
+        for kind, val in parts:
+            if kind == "para":
+                if result and result[-1] not in ("\n", "\n\n"):
+                    result.append("\n\n")
+                pending_space = False
+            elif kind == "space":
+                pending_space = True
+            else:  # word
+                if result and pending_space:
+                    result.append(" ")
+                elif result and result[-1] not in ("\n", "\n\n", " "):
+                    result.append(" ")
+                result.append(val)
+                pending_space = False
+
+        joined = "".join(result)
+        joined = re.sub(r"  +", " ", joined)
+        joined = re.sub(r"\n{3,}", "\n\n", joined)
+        return joined.strip()
 
     def _split_page(self, text: str, page: int) -> list[ParsedSection]:
         """한 페이지 텍스트를 제목 기준으로 섹션 분리."""
@@ -273,7 +340,7 @@ class StructureAwareChunker:
     - 청크마다 검색에 유리한 메타데이터 부착
     """
 
-    def __init__(self, chunk_size: int = 800, overlap: int = 100):
+    def __init__(self, chunk_size: int = 400, overlap: int = 80):
         self.chunk_size = chunk_size
         self.overlap = overlap
 
@@ -288,7 +355,8 @@ class StructureAwareChunker:
 
         for i, raw in enumerate(raw_chunks):
             text = heading_prefix + raw
-            chunk_id = _stable_id(source, section.heading, i)
+            chunk_id = _stable_id(source, section.heading, i,
+                                  page=section.page or 0, sheet=section.sheet or "")
             meta = _build_metadata(
                 source=source,
                 section=section,
@@ -311,9 +379,12 @@ class StructureAwareChunker:
 
 # ── 메타데이터 빌더 ───────────────────────────────────────────────────────────
 
-def _stable_id(source: str, heading: str, idx: int) -> str:
-    """재현 가능한 청크 ID (내용 기반)."""
-    return hashlib.md5(f"{source}::{heading}::{idx}".encode()).hexdigest()
+def _stable_id(source: str, heading: str, idx: int, page: int = 0, sheet: str = "") -> str:
+    """재현 가능한 청크 ID.
+
+    heading이 비어 있는 섹션이 여러 개일 때 page/sheet로 충돌 방지.
+    """
+    return hashlib.md5(f"{source}::{page}::{sheet}::{heading}::{idx}".encode()).hexdigest()
 
 
 def _build_metadata(
@@ -670,7 +741,7 @@ class LLMReranker:
             return hits[:top_k]
 
         doc_lines = "\n\n".join(
-            f"[{i + 1}] {h['text'][:500]}"
+            f"[{i + 1}] {(h.get('text') or '')[:500]}"
             for i, h in enumerate(hits)
         )
         try:
@@ -742,8 +813,8 @@ class AdvancedRAGIndexer:
         chroma_dir: Path,
         data_dir: Path,
         manifest_dir: Path | None = None,
-        chunk_size: int = 800,
-        overlap: int = 100,
+        chunk_size: int = 400,
+        overlap: int = 80,
         contextual: bool = True,
         bm25_weight: float = 0.3,
         rerank: bool = True,
@@ -895,7 +966,9 @@ class AdvancedRAGIndexer:
             for cid, doc, meta, dist in zip(
                 r["ids"][0], r["documents"][0], r["metadatas"][0], r["distances"][0]
             ):
-                sem_hits.append({"id": cid, "text": doc, "metadata": meta, "distance": dist})
+                if doc is None:
+                    continue
+                sem_hits.append({"id": cid, "text": doc, "metadata": meta or {}, "distance": dist})
                 sem_id_set.add(cid)
 
             # ── ② BM25 검색
@@ -918,8 +991,10 @@ class AdvancedRAGIndexer:
                 for cid, doc, meta in zip(
                     extra["ids"], extra["documents"], extra["metadatas"]
                 ):
+                    if doc is None:
+                        continue
                     sem_map[cid] = {
-                        "id": cid, "text": doc, "metadata": meta, "distance": 1.0,
+                        "id": cid, "text": doc, "metadata": meta or {}, "distance": 1.0,
                     }
 
             rrf_map = dict(merged)

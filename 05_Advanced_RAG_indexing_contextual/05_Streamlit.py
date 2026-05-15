@@ -320,9 +320,12 @@ def rag_query(
         return "", []
     parts = []
     for h in hits:
-        src     = h["metadata"].get("source", "")
-        section = h["metadata"].get("section", "")
-        page    = h["metadata"].get("page", "")
+        if not h or not h.get("text"):
+            continue
+        meta    = h.get("metadata") or {}
+        src     = meta.get("source", "")
+        section = meta.get("section", "")
+        page    = meta.get("page", "")
         label   = f"{src}" + (f" p.{page}" if page else "") + (f" [{section}]" if section else "")
         parts.append(f"[{label}]\n{h['text'][:400]}")
     return "\n\n---\n\n".join(parts), hits

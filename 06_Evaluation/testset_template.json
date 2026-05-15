@@ -1,0 +1,348 @@
+{
+  "version": "1.0",
+  "description": "AX RAG 평가 테스트셋 — AXCompass.pdf 기반",
+  "cases": [
+    {
+      "id": "ret_001",
+      "description": "AX Compass 유형 검색 — 균형형 관련 청크 회수 여부",
+      "input": null,
+      "retrieval_queries": [
+        {
+          "query": "AX Compass 균형형이란 무엇인가요?",
+          "relevant_sections": ["균형형", "AX Compass", "compass"],
+          "k": 6
+        },
+        {
+          "query": "과신형 학습자의 특성과 교육 전략",
+          "relevant_sections": ["과신형", "자신감", "교육 전략"],
+          "k": 6
+        },
+        {
+          "query": "AI 교육에서 그룹별 실습 방식 차이",
+          "relevant_sections": ["그룹", "실습", "그룹A", "그룹B", "그룹C"],
+          "k": 6
+        }
+      ],
+      "generated_curriculum": null,
+      "notes": "retrieval-only 케이스. generated_curriculum이 null이면 faithfulness/coverage/rule 평가는 생략."
+    },
+    {
+      "id": "full_001",
+      "description": "1일 8시간 — 3그룹 모두 존재, 규칙 준수 커리큘럼",
+      "input": {
+        "company": "테스트기업",
+        "audience": "비개발 직군 대리~차장, AI 경험 거의 없음",
+        "ai_experience": "ChatGPT 가끔 사용해봄",
+        "constraints": "ChatGPT만 사용 가능, 실습 위주 구성",
+        "goal": "업무 생산성 향상, AI 도구 활용 역량 강화",
+        "days": 1,
+        "hours_per_day": 8,
+        "ax_counts": {
+          "균형형": 3,
+          "이해형": 2,
+          "과신형": 4,
+          "실행형": 2,
+          "판단형": 1,
+          "조심형": 3
+        }
+      },
+      "retrieval_queries": [
+        {
+          "query": "AX Compass 유형별 AI 학습 성향",
+          "relevant_sections": ["균형형", "이해형", "과신형", "실행형", "판단형", "조심형", "AX Compass"],
+          "k": 6
+        },
+        {
+          "query": "비개발 직군 AI 입문 교육 방법",
+          "relevant_sections": ["입문", "비개발", "교육", "활용"],
+          "k": 6
+        }
+      ],
+      "generated_curriculum": {
+        "overview": {
+          "company": "테스트기업",
+          "department": "경영지원본부",
+          "audience": "비개발 직군 대리~차장",
+          "topics": ["AI 기초 이해", "ChatGPT 업무 활용", "AX Compass 유형별 실습"],
+          "total_hours": 8,
+          "days": 1,
+          "hours_per_day": 8,
+          "difficulty": "입문",
+          "ax_compass_distribution": {
+            "그룹A": {"types": ["균형형", "이해형"], "count": 5},
+            "그룹B": {"types": ["과신형", "실행형"], "count": 6},
+            "그룹C": {"types": ["판단형", "조심형"], "count": 4}
+          }
+        },
+        "theory_sessions": [
+          {
+            "order": 1,
+            "title": "AI와 ChatGPT 기초 개념",
+            "duration_hours": 2,
+            "objective": "AI 기술의 기초 개념과 업무 활용 가능성 이해",
+            "activities": ["강의", "Q&A"],
+            "key_concepts": ["생성형 AI", "프롬프트", "ChatGPT"]
+          },
+          {
+            "order": 2,
+            "title": "AX Compass 소개 및 유형 이해",
+            "duration_hours": 2,
+            "objective": "AX Compass 6가지 유형의 특성 이해 및 자기 유형 확인",
+            "activities": ["강의", "자가진단"],
+            "key_concepts": ["AX Compass", "균형형", "과신형", "조심형"]
+          }
+        ],
+        "practice_sessions": {
+          "그룹A": [
+            {
+              "order": 1,
+              "title": "ChatGPT 기초 실습 (균형형·이해형)",
+              "duration_hours": 4,
+              "objective": "ChatGPT로 업무 문서 작성 및 요약 실습",
+              "activities": ["프롬프트 작성 실습", "업무 적용 사례 분석"],
+              "ax_type_rationale": "균형형과 이해형은 체계적인 학습을 선호하며 순차적 가이드가 효과적"
+            }
+          ],
+          "그룹B": [
+            {
+              "order": 1,
+              "title": "ChatGPT 심화 활용 (과신형·실행형)",
+              "duration_hours": 4,
+              "objective": "고급 프롬프트 기법과 자동화 업무 적용",
+              "activities": ["고급 프롬프트 실습", "업무 자동화 시나리오"],
+              "ax_type_rationale": "과신형과 실행형은 도전적 과제를 선호하며 자율적 탐색 기회를 제공"
+            }
+          ],
+          "그룹C": [
+            {
+              "order": 1,
+              "title": "ChatGPT 안전 활용 (판단형·조심형)",
+              "duration_hours": 4,
+              "objective": "AI 활용 리스크 이해와 안전한 사용법 습득",
+              "activities": ["사례 기반 토론", "안전 가이드라인 실습"],
+              "ax_type_rationale": "판단형과 조심형은 신중한 접근이 필요하며 검증된 사례 중심 학습이 효과적"
+            }
+          ]
+        },
+        "expected_outcomes": [
+          "ChatGPT를 업무에 기초 수준으로 활용할 수 있다",
+          "자신의 AI 학습 성향을 파악하고 맞춤형 학습 전략을 수립할 수 있다"
+        ],
+        "prerequisites": ["인터넷 연결 가능 PC", "ChatGPT 계정"]
+      },
+      "notes": "시간 합계 검증: theory(2+2=4h) + practice(4h) = 8h = 1일*8h/일"
+    },
+    {
+      "id": "full_002",
+      "description": "2일 8h/일 — 그룹C 없음 (판단형·조심형 0명), 규칙 위반 케이스 포함",
+      "input": {
+        "company": "샘플주식회사",
+        "audience": "개발자 팀리드~수석, AI 도구 경험 있음",
+        "ai_experience": "GitHub Copilot, ChatGPT 업무 활용 중",
+        "constraints": "AWS Bedrock 환경, 사내 보안 정책 준수",
+        "goal": "생성형 AI 기반 개발 생산성 극대화",
+        "days": 2,
+        "hours_per_day": 8,
+        "ax_counts": {
+          "균형형": 3,
+          "이해형": 2,
+          "과신형": 4,
+          "실행형": 3,
+          "판단형": 0,
+          "조심형": 0
+        }
+      },
+      "retrieval_queries": [
+        {
+          "query": "AX Compass 균형형 이해형 특성",
+          "relevant_sections": ["균형형", "이해형", "그룹A"],
+          "k": 6
+        },
+        {
+          "query": "AX Compass 과신형 실행형 교육 방법",
+          "relevant_sections": ["과신형", "실행형", "그룹B"],
+          "k": 6
+        }
+      ],
+      "generated_curriculum": {
+        "overview": {
+          "company": "샘플주식회사",
+          "department": "개발본부",
+          "audience": "개발자 팀리드~수석",
+          "topics": ["생성형 AI 심화", "AWS Bedrock 활용", "코드 자동화", "AX 유형별 AI 전략"],
+          "total_hours": 16,
+          "days": 2,
+          "hours_per_day": 8,
+          "difficulty": "중급",
+          "ax_compass_distribution": {
+            "그룹A": {"types": ["균형형", "이해형"], "count": 5},
+            "그룹B": {"types": ["과신형", "실행형"], "count": 7},
+            "그룹C": {"types": ["판단형", "조심형"], "count": 0}
+          }
+        },
+        "theory_sessions": [
+          {
+            "order": 1,
+            "title": "생성형 AI 기술 심화 이해",
+            "duration_hours": 2,
+            "objective": "LLM 동작 원리와 기업 AI 도입 사례 이해",
+            "activities": ["기술 강의", "사례 분석"],
+            "key_concepts": ["LLM", "파인튜닝", "RAG", "프롬프트 엔지니어링"]
+          },
+          {
+            "order": 2,
+            "title": "AWS Bedrock 환경 및 보안 정책",
+            "duration_hours": 2,
+            "objective": "사내 AI 플랫폼 구조와 보안 요구사항 이해",
+            "activities": ["플랫폼 데모", "보안 가이드 리뷰"],
+            "key_concepts": ["Bedrock", "IAM", "데이터 거버넌스"]
+          },
+          {
+            "order": 3,
+            "title": "AX Compass 유형별 AI 활용 전략",
+            "duration_hours": 4,
+            "objective": "팀원 유형 분포를 고려한 AI 도입 전략 수립",
+            "activities": ["워크숍", "전략 발표"],
+            "key_concepts": ["AX Compass", "균형형", "과신형", "실행형"]
+          }
+        ],
+        "practice_sessions": {
+          "그룹A": [
+            {
+              "order": 1,
+              "title": "AI 코드 리뷰 자동화 실습 (균형형·이해형)",
+              "duration_hours": 4,
+              "objective": "Copilot과 Bedrock을 활용한 코드 리뷰 자동화",
+              "activities": ["실습 환경 설정", "코드 리뷰 파이프라인 구축"],
+              "ax_type_rationale": "균형형·이해형은 체계적 프레임워크를 선호하여 단계별 자동화 실습이 효과적"
+            },
+            {
+              "order": 2,
+              "title": "RAG 기반 문서 검색 시스템 구축 (균형형·이해형)",
+              "duration_hours": 4,
+              "objective": "사내 문서 기반 AI 검색 시스템 프로토타입 개발",
+              "activities": ["RAG 파이프라인 실습", "팀 프로젝트"],
+              "ax_type_rationale": "이해형은 전체 아키텍처 파악 후 구현을 선호하므로 설계 우선 접근"
+            }
+          ],
+          "그룹B": [
+            {
+              "order": 1,
+              "title": "AI 에이전트 개발 실습 (과신형·실행형)",
+              "duration_hours": 4,
+              "objective": "자율 실행 AI 에이전트 프로토타입 개발",
+              "activities": ["에이전트 설계", "도구 통합 실습"],
+              "ax_type_rationale": "과신형·실행형은 자율적 탐색과 빠른 실행을 선호하므로 오픈 과제 제공"
+            },
+            {
+              "order": 2,
+              "title": "생성형 AI 활용 사례 발표 (과신형·실행형)",
+              "duration_hours": 4,
+              "objective": "팀별 AI 활용 아이디어 구현 및 공유",
+              "activities": ["핵커톤 형식 실습", "결과 발표"],
+              "ax_type_rationale": "실행형은 결과 중심 과제에서 높은 몰입도를 보임"
+            }
+          ]
+        },
+        "expected_outcomes": [
+          "AWS Bedrock을 활용한 사내 AI 솔루션을 설계하고 프로토타입을 구현할 수 있다",
+          "팀원의 AX Compass 유형에 맞는 AI 도입 전략을 수립할 수 있다"
+        ],
+        "prerequisites": ["AWS 계정 (Bedrock 활성화)", "Python 기초 지식", "Git 사용 경험"]
+      },
+      "notes": "그룹C 없음 검증: 판단형·조심형 0명이므로 practice_sessions에 그룹C 없어야 함. theory(2+2+4=8h) + practice(4+4=8h) = 16h"
+    },
+    {
+      "id": "rule_fail_001",
+      "description": "의도적 규칙 위반 케이스 — 시간 합계 불일치, 그룹 오류 탐지 검증용",
+      "input": {
+        "company": "규칙위반테스트",
+        "audience": "테스트 대상",
+        "ai_experience": "없음",
+        "constraints": "없음",
+        "goal": "테스트",
+        "days": 1,
+        "hours_per_day": 8,
+        "ax_counts": {
+          "균형형": 2,
+          "이해형": 1,
+          "과신형": 3,
+          "실행형": 2,
+          "판단형": 0,
+          "조심형": 0
+        }
+      },
+      "retrieval_queries": [],
+      "generated_curriculum": {
+        "overview": {
+          "company": "규칙위반테스트",
+          "department": "-",
+          "audience": "테스트",
+          "topics": ["AI 기초"],
+          "total_hours": 10,
+          "days": 1,
+          "hours_per_day": 10,
+          "difficulty": "입문",
+          "ax_compass_distribution": {
+            "그룹A": {"types": ["균형형", "이해형"], "count": 3},
+            "그룹B": {"types": ["과신형", "실행형"], "count": 5},
+            "그룹C": {"types": ["판단형", "조심형"], "count": 0}
+          }
+        },
+        "theory_sessions": [
+          {
+            "order": 1,
+            "title": "AI 개요",
+            "duration_hours": 3,
+            "objective": "AI 기초 이해",
+            "activities": ["강의"],
+            "key_concepts": ["AI"]
+          },
+          {
+            "order": 3,
+            "title": "실습 준비",
+            "duration_hours": 1,
+            "objective": "실습 환경 설정",
+            "activities": ["설정"],
+            "key_concepts": ["환경"]
+          }
+        ],
+        "practice_sessions": {
+          "그룹A": [
+            {
+              "order": 1,
+              "title": "그룹A 실습",
+              "duration_hours": 2,
+              "objective": "실습",
+              "activities": ["실습"],
+              "ax_type_rationale": "균형형 특성 반영"
+            }
+          ],
+          "그룹B": [
+            {
+              "order": 1,
+              "title": "그룹B 실습",
+              "duration_hours": 2,
+              "objective": "실습",
+              "activities": ["실습"],
+              "ax_type_rationale": "과신형 특성 반영"
+            }
+          ],
+          "그룹C": [
+            {
+              "order": 1,
+              "title": "그룹C 실습 (오류: 0명인데 존재)",
+              "duration_hours": 2,
+              "objective": "실습",
+              "activities": ["실습"],
+              "ax_type_rationale": "조심형 특성 반영"
+            }
+          ]
+        },
+        "expected_outcomes": ["AI 기초 이해"],
+        "prerequisites": []
+      },
+      "notes": "의도된 위반: (1) total_hours=10 != days*hours_per_day=8, (2) hours_per_day=10 != 8, (3) 그룹C 0명인데 practice_sessions에 존재, (4) theory order [1,3] 불연속 (단조증가이므로 통과)"
+    }
+  ]
+}

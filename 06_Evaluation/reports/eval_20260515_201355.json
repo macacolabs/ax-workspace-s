@@ -1,0 +1,771 @@
+{
+  "cases": [
+    {
+      "case_id": "ret_001",
+      "description": "AX Compass 유형 검색 — 균형형 관련 청크 회수 여부",
+      "retrieval_results": [
+        {
+          "query": "AX Compass 균형형이란 무엇인가요?",
+          "k": 6,
+          "relevant_sections": [
+            "균형형",
+            "AX Compass",
+            "compass"
+          ],
+          "hits": [
+            {
+              "rank": 1,
+              "chunk_id": "29beb2a67b6809e4e2079d91ac9568aa",
+              "section": "",
+              "text_preview": "이 청크는 \"AX Compass\"의 프로필 유형에 대한 설명의 시작 부분으로, 사용자의 AX 활용 특성을 해석하기 위해 제공되는 6개의 프로필 유형 중 첫 번째인 \"균형형\"에 대한 내용을 담고 있습니다. 이 부분에서",
+              "retrieval": "semantic",
+              "rrf_score": 0.011475409836065573,
+              "rerank_score": 0.9,
+              "is_relevant": true
+            },
+            {
+              "rank": 2,
+              "chunk_id": "ed89cd0b705c86011da4308a4a8e9bbf",
+              "section": "",
+              "text_preview": "이 청크는 AX Compass의 프로필 유형 중 '균형형(BALANCED)'에 대한 설명으로, 사용자의 강점, 보완 방향, 그리고 대표 태그를 포함하고 있습니다. 핵심 키워드는 'AI 활용', '업무 적용 흐름', ",
+              "retrieval": "semantic",
+              "rrf_score": 0.01129032258064516,
+              "rerank_score": 0.85,
+              "is_relevant": true
+            },
+            {
+              "rank": 3,
+              "chunk_id": "b98cd3bf83ffd68c3facab2eae429159",
+              "section": "",
+              "text_preview": "이 청크는 \"판단형 (ANALYST)\" 프로필 유형의 보완 방향에 대한 내용으로, 신중한 판단력과 실무 활용력을 강조하고 있습니다. 특히, 일관된 사용 루틴을 통해 신중한 판단력이 실제 활용력으로 자연스럽게 연결될 ",
+              "retrieval": "semantic",
+              "rrf_score": 0.01111111111111111,
+              "rerank_score": 0.0,
+              "is_relevant": false
+            }
+          ],
+          "precision_at_k": 0.6666666666666666,
+          "mrr": 1.0,
+          "avg_rerank_score": 0.5833333333333334,
+          "num_relevant": 2
+        },
+        {
+          "query": "과신형 학습자의 특성과 교육 전략",
+          "k": 6,
+          "relevant_sections": [
+            "과신형",
+            "자신감",
+            "교육 전략"
+          ],
+          "hits": [
+            {
+              "rank": 1,
+              "chunk_id": "29beb2a67b6809e4e2079d91ac9568aa",
+              "section": "",
+              "text_preview": "이 청크는 \"AX Compass\"의 프로필 유형에 대한 설명의 시작 부분으로, 사용자의 AX 활용 특성을 해석하기 위해 제공되는 6개의 프로필 유형 중 첫 번째인 \"균형형\"에 대한 내용을 담고 있습니다. 이 부분에서",
+              "retrieval": "semantic",
+              "rrf_score": 0.01111111111111111,
+              "rerank_score": 0.4,
+              "is_relevant": false
+            },
+            {
+              "rank": 2,
+              "chunk_id": "ed89cd0b705c86011da4308a4a8e9bbf",
+              "section": "",
+              "text_preview": "이 청크는 AX Compass의 프로필 유형 중 '균형형(BALANCED)'에 대한 설명으로, 사용자의 강점, 보완 방향, 그리고 대표 태그를 포함하고 있습니다. 핵심 키워드는 'AI 활용', '업무 적용 흐름', ",
+              "retrieval": "semantic",
+              "rrf_score": 0.01129032258064516,
+              "rerank_score": 0.3,
+              "is_relevant": false
+            },
+            {
+              "rank": 3,
+              "chunk_id": "b98cd3bf83ffd68c3facab2eae429159",
+              "section": "",
+              "text_preview": "이 청크는 \"판단형 (ANALYST)\" 프로필 유형의 보완 방향에 대한 내용으로, 신중한 판단력과 실무 활용력을 강조하고 있습니다. 특히, 일관된 사용 루틴을 통해 신중한 판단력이 실제 활용력으로 자연스럽게 연결될 ",
+              "retrieval": "semantic",
+              "rrf_score": 0.011475409836065573,
+              "rerank_score": 0.2,
+              "is_relevant": false
+            }
+          ],
+          "precision_at_k": 0.0,
+          "mrr": 0.0,
+          "avg_rerank_score": 0.3,
+          "num_relevant": 0
+        },
+        {
+          "query": "AI 교육에서 그룹별 실습 방식 차이",
+          "k": 6,
+          "relevant_sections": [
+            "그룹",
+            "실습",
+            "그룹A",
+            "그룹B",
+            "그룹C"
+          ],
+          "hits": [
+            {
+              "rank": 1,
+              "chunk_id": "ed89cd0b705c86011da4308a4a8e9bbf",
+              "section": "",
+              "text_preview": "이 청크는 AX Compass의 프로필 유형 중 '균형형(BALANCED)'에 대한 설명으로, 사용자의 강점, 보완 방향, 그리고 대표 태그를 포함하고 있습니다. 핵심 키워드는 'AI 활용', '업무 적용 흐름', ",
+              "retrieval": "semantic",
+              "rrf_score": 0.011475409836065573,
+              "rerank_score": 0.1,
+              "is_relevant": false
+            },
+            {
+              "rank": 2,
+              "chunk_id": "29beb2a67b6809e4e2079d91ac9568aa",
+              "section": "",
+              "text_preview": "이 청크는 \"AX Compass\"의 프로필 유형에 대한 설명의 시작 부분으로, 사용자의 AX 활용 특성을 해석하기 위해 제공되는 6개의 프로필 유형 중 첫 번째인 \"균형형\"에 대한 내용을 담고 있습니다. 이 부분에서",
+              "retrieval": "semantic",
+              "rrf_score": 0.01129032258064516,
+              "rerank_score": 0.1,
+              "is_relevant": false
+            },
+            {
+              "rank": 3,
+              "chunk_id": "b98cd3bf83ffd68c3facab2eae429159",
+              "section": "",
+              "text_preview": "이 청크는 \"판단형 (ANALYST)\" 프로필 유형의 보완 방향에 대한 내용으로, 신중한 판단력과 실무 활용력을 강조하고 있습니다. 특히, 일관된 사용 루틴을 통해 신중한 판단력이 실제 활용력으로 자연스럽게 연결될 ",
+              "retrieval": "semantic",
+              "rrf_score": 0.01111111111111111,
+              "rerank_score": 0.0,
+              "is_relevant": false
+            }
+          ],
+          "precision_at_k": 0.0,
+          "mrr": 0.0,
+          "avg_rerank_score": 0.06666666666666667,
+          "num_relevant": 0
+        }
+      ],
+      "faithfulness": null,
+      "requirement_coverage": null,
+      "rule_based": null,
+      "elapsed_s": 9.332526206970215
+    },
+    {
+      "case_id": "full_001",
+      "description": "1일 8시간 — 3그룹 모두 존재, 규칙 준수 커리큘럼",
+      "retrieval_results": [
+        {
+          "query": "AX Compass 유형별 AI 학습 성향",
+          "k": 6,
+          "relevant_sections": [
+            "균형형",
+            "이해형",
+            "과신형",
+            "실행형",
+            "판단형",
+            "조심형",
+            "AX Compass"
+          ],
+          "hits": [
+            {
+              "rank": 1,
+              "chunk_id": "29beb2a67b6809e4e2079d91ac9568aa",
+              "section": "",
+              "text_preview": "이 청크는 \"AX Compass\"의 프로필 유형에 대한 설명의 시작 부분으로, 사용자의 AX 활용 특성을 해석하기 위해 제공되는 6개의 프로필 유형 중 첫 번째인 \"균형형\"에 대한 내용을 담고 있습니다. 이 부분에서",
+              "retrieval": "semantic",
+              "rrf_score": 0.011475409836065573,
+              "rerank_score": 0.9,
+              "is_relevant": true
+            },
+            {
+              "rank": 2,
+              "chunk_id": "ed89cd0b705c86011da4308a4a8e9bbf",
+              "section": "",
+              "text_preview": "이 청크는 AX Compass의 프로필 유형 중 '균형형(BALANCED)'에 대한 설명으로, 사용자의 강점, 보완 방향, 그리고 대표 태그를 포함하고 있습니다. 핵심 키워드는 'AI 활용', '업무 적용 흐름', ",
+              "retrieval": "semantic",
+              "rrf_score": 0.01129032258064516,
+              "rerank_score": 0.85,
+              "is_relevant": true
+            },
+            {
+              "rank": 3,
+              "chunk_id": "b98cd3bf83ffd68c3facab2eae429159",
+              "section": "",
+              "text_preview": "이 청크는 \"판단형 (ANALYST)\" 프로필 유형의 보완 방향에 대한 내용으로, 신중한 판단력과 실무 활용력을 강조하고 있습니다. 특히, 일관된 사용 루틴을 통해 신중한 판단력이 실제 활용력으로 자연스럽게 연결될 ",
+              "retrieval": "semantic",
+              "rrf_score": 0.01111111111111111,
+              "rerank_score": 0.6,
+              "is_relevant": true
+            }
+          ],
+          "precision_at_k": 1.0,
+          "mrr": 1.0,
+          "avg_rerank_score": 0.7833333333333333,
+          "num_relevant": 3
+        },
+        {
+          "query": "비개발 직군 AI 입문 교육 방법",
+          "k": 6,
+          "relevant_sections": [
+            "입문",
+            "비개발",
+            "교육",
+            "활용"
+          ],
+          "hits": [
+            {
+              "rank": 1,
+              "chunk_id": "29beb2a67b6809e4e2079d91ac9568aa",
+              "section": "",
+              "text_preview": "이 청크는 \"AX Compass\"의 프로필 유형에 대한 설명의 시작 부분으로, 사용자의 AX 활용 특성을 해석하기 위해 제공되는 6개의 프로필 유형 중 첫 번째인 \"균형형\"에 대한 내용을 담고 있습니다. 이 부분에서",
+              "retrieval": "semantic",
+              "rrf_score": 0.01129032258064516,
+              "rerank_score": 0.3,
+              "is_relevant": true
+            },
+            {
+              "rank": 2,
+              "chunk_id": "ed89cd0b705c86011da4308a4a8e9bbf",
+              "section": "",
+              "text_preview": "이 청크는 AX Compass의 프로필 유형 중 '균형형(BALANCED)'에 대한 설명으로, 사용자의 강점, 보완 방향, 그리고 대표 태그를 포함하고 있습니다. 핵심 키워드는 'AI 활용', '업무 적용 흐름', ",
+              "retrieval": "semantic",
+              "rrf_score": 0.011475409836065573,
+              "rerank_score": 0.2,
+              "is_relevant": true
+            },
+            {
+              "rank": 3,
+              "chunk_id": "b98cd3bf83ffd68c3facab2eae429159",
+              "section": "",
+              "text_preview": "이 청크는 \"판단형 (ANALYST)\" 프로필 유형의 보완 방향에 대한 내용으로, 신중한 판단력과 실무 활용력을 강조하고 있습니다. 특히, 일관된 사용 루틴을 통해 신중한 판단력이 실제 활용력으로 자연스럽게 연결될 ",
+              "retrieval": "semantic",
+              "rrf_score": 0.01111111111111111,
+              "rerank_score": 0.1,
+              "is_relevant": true
+            }
+          ],
+          "precision_at_k": 1.0,
+          "mrr": 1.0,
+          "avg_rerank_score": 0.19999999999999998,
+          "num_relevant": 3
+        }
+      ],
+      "faithfulness": {
+        "score": 1.0,
+        "grounded_claims": [
+          "균형형은 필요할 때 AI를 적절하게 활용해 생산성을 높일 수 있다.",
+          "판단형은 신중한 판단력이 실무 활용력으로 연결될 수 있다.",
+          "조심형은 신중한 접근이 필요하며 검증된 사례 중심 학습이 효과적이다."
+        ],
+        "ungrounded_claims": [],
+        "reason": "모든 AX Compass 유형 설명이 근거 텍스트에 기반하여 정확하게 반영되었다.",
+        "context_chunks_used": 6,
+        "error": null
+      },
+      "requirement_coverage": {
+        "goal_alignment": 0.9,
+        "audience_appropriateness": 0.85,
+        "constraint_compliance": 1.0,
+        "overall": 0.91,
+        "gaps": [
+          "AI 도구 활용에 대한 구체적인 사례 부족"
+        ],
+        "highlights": [
+          "실습 위주 구성",
+          "입문 난이도 설정",
+          "ChatGPT만 사용 가능"
+        ],
+        "error": null
+      },
+      "rule_based": {
+        "checks": [
+          {
+            "name": "total_hours_match",
+            "passed": true,
+            "message": "overview.total_hours == days*hours_per_day (8.0h)",
+            "expected": 8.0,
+            "actual": 8.0
+          },
+          {
+            "name": "days_match",
+            "passed": true,
+            "message": "overview.days == 1",
+            "expected": 1,
+            "actual": 1
+          },
+          {
+            "name": "hours_per_day_match",
+            "passed": true,
+            "message": "overview.hours_per_day == 8.0",
+            "expected": 8.0,
+            "actual": 8
+          },
+          {
+            "name": "hours_sum_그룹A",
+            "passed": true,
+            "message": "그룹A: theory(4.0h) + practice(4.0h) = 8.0h (expect 8.0h)",
+            "expected": 8.0,
+            "actual": 8.0
+          },
+          {
+            "name": "hours_sum_그룹B",
+            "passed": true,
+            "message": "그룹B: theory(4.0h) + practice(4.0h) = 8.0h (expect 8.0h)",
+            "expected": 8.0,
+            "actual": 8.0
+          },
+          {
+            "name": "hours_sum_그룹C",
+            "passed": true,
+            "message": "그룹C: theory(4.0h) + practice(4.0h) = 8.0h (expect 8.0h)",
+            "expected": 8.0,
+            "actual": 8.0
+          },
+          {
+            "name": "group_present_그룹A",
+            "passed": true,
+            "message": "그룹A (균형형+이해형, 5명) 실습 세션 존재",
+            "expected": true,
+            "actual": true
+          },
+          {
+            "name": "group_present_그룹B",
+            "passed": true,
+            "message": "그룹B (과신형+실행형, 6명) 실습 세션 존재",
+            "expected": true,
+            "actual": true
+          },
+          {
+            "name": "group_present_그룹C",
+            "passed": true,
+            "message": "그룹C (판단형+조심형, 4명) 실습 세션 존재",
+            "expected": true,
+            "actual": true
+          },
+          {
+            "name": "theory_order_monotonic",
+            "passed": true,
+            "message": "이론 세션 order 단조 증가",
+            "expected": null,
+            "actual": [
+              1,
+              2
+            ]
+          },
+          {
+            "name": "theory_duration_positive",
+            "passed": true,
+            "message": "모든 이론 세션 duration_hours > 0",
+            "expected": null,
+            "actual": "all valid"
+          },
+          {
+            "name": "practice_duration_그룹A",
+            "passed": true,
+            "message": "그룹A 모든 실습 세션 duration_hours > 0",
+            "expected": null,
+            "actual": "all valid"
+          },
+          {
+            "name": "practice_duration_그룹B",
+            "passed": true,
+            "message": "그룹B 모든 실습 세션 duration_hours > 0",
+            "expected": null,
+            "actual": "all valid"
+          },
+          {
+            "name": "practice_duration_그룹C",
+            "passed": true,
+            "message": "그룹C 모든 실습 세션 duration_hours > 0",
+            "expected": null,
+            "actual": "all valid"
+          }
+        ]
+      },
+      "elapsed_s": 9.17250370979309
+    },
+    {
+      "case_id": "full_002",
+      "description": "2일 8h/일 — 그룹C 없음 (판단형·조심형 0명), 규칙 위반 케이스 포함",
+      "retrieval_results": [
+        {
+          "query": "AX Compass 균형형 이해형 특성",
+          "k": 6,
+          "relevant_sections": [
+            "균형형",
+            "이해형",
+            "그룹A"
+          ],
+          "hits": [
+            {
+              "rank": 1,
+              "chunk_id": "29beb2a67b6809e4e2079d91ac9568aa",
+              "section": "",
+              "text_preview": "이 청크는 \"AX Compass\"의 프로필 유형에 대한 설명의 시작 부분으로, 사용자의 AX 활용 특성을 해석하기 위해 제공되는 6개의 프로필 유형 중 첫 번째인 \"균형형\"에 대한 내용을 담고 있습니다. 이 부분에서",
+              "retrieval": "semantic",
+              "rrf_score": 0.011475409836065573,
+              "rerank_score": 0.9,
+              "is_relevant": true
+            },
+            {
+              "rank": 2,
+              "chunk_id": "ed89cd0b705c86011da4308a4a8e9bbf",
+              "section": "",
+              "text_preview": "이 청크는 AX Compass의 프로필 유형 중 '균형형(BALANCED)'에 대한 설명으로, 사용자의 강점, 보완 방향, 그리고 대표 태그를 포함하고 있습니다. 핵심 키워드는 'AI 활용', '업무 적용 흐름', ",
+              "retrieval": "semantic",
+              "rrf_score": 0.01129032258064516,
+              "rerank_score": 0.85,
+              "is_relevant": true
+            },
+            {
+              "rank": 3,
+              "chunk_id": "b98cd3bf83ffd68c3facab2eae429159",
+              "section": "",
+              "text_preview": "이 청크는 \"판단형 (ANALYST)\" 프로필 유형의 보완 방향에 대한 내용으로, 신중한 판단력과 실무 활용력을 강조하고 있습니다. 특히, 일관된 사용 루틴을 통해 신중한 판단력이 실제 활용력으로 자연스럽게 연결될 ",
+              "retrieval": "semantic",
+              "rrf_score": 0.01111111111111111,
+              "rerank_score": 0.1,
+              "is_relevant": false
+            }
+          ],
+          "precision_at_k": 0.6666666666666666,
+          "mrr": 1.0,
+          "avg_rerank_score": 0.6166666666666667,
+          "num_relevant": 2
+        },
+        {
+          "query": "AX Compass 과신형 실행형 교육 방법",
+          "k": 6,
+          "relevant_sections": [
+            "과신형",
+            "실행형",
+            "그룹B"
+          ],
+          "hits": [
+            {
+              "rank": 1,
+              "chunk_id": "29beb2a67b6809e4e2079d91ac9568aa",
+              "section": "",
+              "text_preview": "이 청크는 \"AX Compass\"의 프로필 유형에 대한 설명의 시작 부분으로, 사용자의 AX 활용 특성을 해석하기 위해 제공되는 6개의 프로필 유형 중 첫 번째인 \"균형형\"에 대한 내용을 담고 있습니다. 이 부분에서",
+              "retrieval": "semantic",
+              "rrf_score": 0.01129032258064516,
+              "rerank_score": 0.8,
+              "is_relevant": false
+            },
+            {
+              "rank": 2,
+              "chunk_id": "ed89cd0b705c86011da4308a4a8e9bbf",
+              "section": "",
+              "text_preview": "이 청크는 AX Compass의 프로필 유형 중 '균형형(BALANCED)'에 대한 설명으로, 사용자의 강점, 보완 방향, 그리고 대표 태그를 포함하고 있습니다. 핵심 키워드는 'AI 활용', '업무 적용 흐름', ",
+              "retrieval": "semantic",
+              "rrf_score": 0.011475409836065573,
+              "rerank_score": 0.7,
+              "is_relevant": false
+            },
+            {
+              "rank": 3,
+              "chunk_id": "b98cd3bf83ffd68c3facab2eae429159",
+              "section": "",
+              "text_preview": "이 청크는 \"판단형 (ANALYST)\" 프로필 유형의 보완 방향에 대한 내용으로, 신중한 판단력과 실무 활용력을 강조하고 있습니다. 특히, 일관된 사용 루틴을 통해 신중한 판단력이 실제 활용력으로 자연스럽게 연결될 ",
+              "retrieval": "semantic",
+              "rrf_score": 0.01111111111111111,
+              "rerank_score": 0.5,
+              "is_relevant": false
+            }
+          ],
+          "precision_at_k": 0.0,
+          "mrr": 0.0,
+          "avg_rerank_score": 0.6666666666666666,
+          "num_relevant": 0
+        }
+      ],
+      "faithfulness": {
+        "score": 1.0,
+        "grounded_claims": [
+          "균형형·이해형은 체계적 프레임워크를 선호하여 단계별 자동화 실습이 효과적",
+          "이해형은 전체 아키텍처 파악 후 구현을 선호하므로 설계 우선 접근",
+          "과신형·실행형은 자율적 탐색과 빠른 실행을 선호하므로 오픈 과제 제공"
+        ],
+        "ungrounded_claims": [],
+        "reason": "모든 AX 유형 설명이 근거 텍스트에 기반하여 정확하게 반영되었습니다.",
+        "context_chunks_used": 6,
+        "error": null
+      },
+      "requirement_coverage": {
+        "goal_alignment": 0.9,
+        "audience_appropriateness": 0.85,
+        "constraint_compliance": 1.0,
+        "overall": 0.91,
+        "gaps": [],
+        "highlights": [
+          "교육 목표가 세션 목표와 학습 결과에 잘 반영됨",
+          "대상자의 수준에 맞는 중급 난이도와 실습 활동 제공",
+          "AWS Bedrock 환경과 보안 정책 준수"
+        ],
+        "error": null
+      },
+      "rule_based": {
+        "checks": [
+          {
+            "name": "total_hours_match",
+            "passed": true,
+            "message": "overview.total_hours == days*hours_per_day (16.0h)",
+            "expected": 16.0,
+            "actual": 16.0
+          },
+          {
+            "name": "days_match",
+            "passed": true,
+            "message": "overview.days == 2",
+            "expected": 2,
+            "actual": 2
+          },
+          {
+            "name": "hours_per_day_match",
+            "passed": true,
+            "message": "overview.hours_per_day == 8.0",
+            "expected": 8.0,
+            "actual": 8
+          },
+          {
+            "name": "hours_sum_그룹A",
+            "passed": true,
+            "message": "그룹A: theory(8.0h) + practice(8.0h) = 16.0h (expect 16.0h)",
+            "expected": 16.0,
+            "actual": 16.0
+          },
+          {
+            "name": "hours_sum_그룹B",
+            "passed": true,
+            "message": "그룹B: theory(8.0h) + practice(8.0h) = 16.0h (expect 16.0h)",
+            "expected": 16.0,
+            "actual": 16.0
+          },
+          {
+            "name": "group_present_그룹A",
+            "passed": true,
+            "message": "그룹A (균형형+이해형, 5명) 실습 세션 존재",
+            "expected": true,
+            "actual": true
+          },
+          {
+            "name": "group_present_그룹B",
+            "passed": true,
+            "message": "그룹B (과신형+실행형, 7명) 실습 세션 존재",
+            "expected": true,
+            "actual": true
+          },
+          {
+            "name": "group_absent_그룹C",
+            "passed": true,
+            "message": "그룹C (0명) 실습 세션 없어야 함",
+            "expected": false,
+            "actual": false
+          },
+          {
+            "name": "theory_order_monotonic",
+            "passed": true,
+            "message": "이론 세션 order 단조 증가",
+            "expected": null,
+            "actual": [
+              1,
+              2,
+              3
+            ]
+          },
+          {
+            "name": "practice_order_그룹A",
+            "passed": true,
+            "message": "그룹A 실습 세션 order 단조 증가",
+            "expected": null,
+            "actual": [
+              1,
+              2
+            ]
+          },
+          {
+            "name": "practice_order_그룹B",
+            "passed": true,
+            "message": "그룹B 실습 세션 order 단조 증가",
+            "expected": null,
+            "actual": [
+              1,
+              2
+            ]
+          },
+          {
+            "name": "theory_duration_positive",
+            "passed": true,
+            "message": "모든 이론 세션 duration_hours > 0",
+            "expected": null,
+            "actual": "all valid"
+          },
+          {
+            "name": "practice_duration_그룹A",
+            "passed": true,
+            "message": "그룹A 모든 실습 세션 duration_hours > 0",
+            "expected": null,
+            "actual": "all valid"
+          },
+          {
+            "name": "practice_duration_그룹B",
+            "passed": true,
+            "message": "그룹B 모든 실습 세션 duration_hours > 0",
+            "expected": null,
+            "actual": "all valid"
+          }
+        ]
+      },
+      "elapsed_s": 12.980394840240479
+    },
+    {
+      "case_id": "rule_fail_001",
+      "description": "의도적 규칙 위반 케이스 — 시간 합계 불일치, 그룹 오류 탐지 검증용",
+      "retrieval_results": [],
+      "faithfulness": {
+        "score": 0.5,
+        "grounded_claims": [
+          "그룹A: 균형형 특성 반영",
+          "그룹B: 과신형 특성 반영"
+        ],
+        "ungrounded_claims": [
+          "그룹C 실습 (오류: 0명인데 존재)"
+        ],
+        "reason": "그룹C에 대한 언급이 근거 없이 존재하여 감점됨.",
+        "context_chunks_used": 0,
+        "error": null
+      },
+      "requirement_coverage": {
+        "goal_alignment": 1.0,
+        "audience_appropriateness": 1.0,
+        "constraint_compliance": 0.8,
+        "overall": 0.93,
+        "gaps": [
+          "총 시간(10시간)이 요구된 시간(8시간)을 초과함",
+          "그룹C 실습이 존재하나 참여자가 없음"
+        ],
+        "highlights": [
+          "교육 목표가 명확히 반영됨",
+          "대상자의 수준에 맞는 입문 난이도",
+          "AI 기초에 대한 이해를 목표로 설정함"
+        ],
+        "error": null
+      },
+      "rule_based": {
+        "checks": [
+          {
+            "name": "total_hours_match",
+            "passed": false,
+            "message": "overview.total_hours == days*hours_per_day (8.0h)",
+            "expected": 8.0,
+            "actual": 10.0
+          },
+          {
+            "name": "days_match",
+            "passed": true,
+            "message": "overview.days == 1",
+            "expected": 1,
+            "actual": 1
+          },
+          {
+            "name": "hours_per_day_match",
+            "passed": false,
+            "message": "overview.hours_per_day == 8.0",
+            "expected": 8.0,
+            "actual": 10
+          },
+          {
+            "name": "hours_sum_그룹A",
+            "passed": false,
+            "message": "그룹A: theory(4.0h) + practice(2.0h) = 6.0h (expect 8.0h)",
+            "expected": 8.0,
+            "actual": 6.0
+          },
+          {
+            "name": "hours_sum_그룹B",
+            "passed": false,
+            "message": "그룹B: theory(4.0h) + practice(2.0h) = 6.0h (expect 8.0h)",
+            "expected": 8.0,
+            "actual": 6.0
+          },
+          {
+            "name": "hours_sum_그룹C",
+            "passed": false,
+            "message": "그룹C: theory(4.0h) + practice(2.0h) = 6.0h (expect 8.0h)",
+            "expected": 8.0,
+            "actual": 6.0
+          },
+          {
+            "name": "group_present_그룹A",
+            "passed": true,
+            "message": "그룹A (균형형+이해형, 3명) 실습 세션 존재",
+            "expected": true,
+            "actual": true
+          },
+          {
+            "name": "group_present_그룹B",
+            "passed": true,
+            "message": "그룹B (과신형+실행형, 5명) 실습 세션 존재",
+            "expected": true,
+            "actual": true
+          },
+          {
+            "name": "group_absent_그룹C",
+            "passed": false,
+            "message": "그룹C (0명) 실습 세션 없어야 함",
+            "expected": false,
+            "actual": true
+          },
+          {
+            "name": "theory_order_monotonic",
+            "passed": true,
+            "message": "이론 세션 order 단조 증가",
+            "expected": null,
+            "actual": [
+              1,
+              3
+            ]
+          },
+          {
+            "name": "theory_duration_positive",
+            "passed": true,
+            "message": "모든 이론 세션 duration_hours > 0",
+            "expected": null,
+            "actual": "all valid"
+          },
+          {
+            "name": "practice_duration_그룹A",
+            "passed": true,
+            "message": "그룹A 모든 실습 세션 duration_hours > 0",
+            "expected": null,
+            "actual": "all valid"
+          },
+          {
+            "name": "practice_duration_그룹B",
+            "passed": true,
+            "message": "그룹B 모든 실습 세션 duration_hours > 0",
+            "expected": null,
+            "actual": "all valid"
+          },
+          {
+            "name": "practice_duration_그룹C",
+            "passed": true,
+            "message": "그룹C 모든 실습 세션 duration_hours > 0",
+            "expected": null,
+            "actual": "all valid"
+          }
+        ]
+      },
+      "elapsed_s": 5.655442953109741
+    }
+  ],
+  "summary": {
+    "total_cases": 4,
+    "retrieval_cases": 3,
+    "curriculum_cases": 3,
+    "avg_precision_at_k": 0.47619047619047616,
+    "avg_mrr": 0.5714285714285714,
+    "avg_faithfulness": 0.8333333333333334,
+    "avg_requirement_coverage": 0.9166666666666666,
+    "avg_rule_score": 0.8571428571428571
+  },
+  "testset_version": "1.0",
+  "evaluated_at": "2026-05-15T11:13:55.179277+00:00"
+}
