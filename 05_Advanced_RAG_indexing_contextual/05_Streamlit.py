@@ -252,6 +252,26 @@ section[data-testid="stSidebar"] hr { border-color: #333 !important; }
   border:1px dashed #ddd; border-radius:10px;
   font-size:.85rem;
 }
+
+/* 리랭킹 점수 바 */
+.rerank-bar-wrap {
+  display:flex; align-items:center; gap:8px;
+  padding:6px 14px; background:#fff8f0;
+  border-bottom:1px solid #ffe0b2;
+}
+.rerank-bar-label {
+  font-size:.65rem; font-weight:700; color:#e65100;
+  text-transform:uppercase; letter-spacing:.06em;
+  white-space:nowrap; flex-shrink:0;
+}
+.rerank-bar-track {
+  flex:1; height:5px; background:#ffe0b2; border-radius:3px; overflow:hidden;
+}
+.rerank-bar-fill { height:100%; border-radius:3px; background:#e65100; }
+.rerank-bar-val {
+  font-size:.7rem; font-weight:700; color:#e65100;
+  min-width:32px; text-align:right; flex-shrink:0;
+}
 </style>
 """
 
@@ -477,6 +497,7 @@ def main():
         "index_report": None,
         "rag_hits": [],
         "just_completed": False,
+        "rerank_enabled": True,
         "phase": STEP_PHASES[0],
         "ax_counts": {},
         "edu_info": {},
@@ -500,41 +521,72 @@ def main():
         st.markdown("### RAG 인덱싱")
 
         if api_key:
-            col_force, col_idx = st.columns(2)
-            with col_force:
-                force = st.checkbox("전체 재인덱싱", value=False)
-            with col_idx:
-                if st.button("인덱싱 실행", use_container_width=True):
-                    with st.spinner("인덱싱 중..."):
-                        indexer = AdvancedRAGIndexer(
-                            api_key=api_key,
-                            chroma_dir=CHROMA_DIR,
-                            data_dir=DATA_DIR,
-                        )
-                        report = indexer.index_directory(force=force)
-                        st.session_state.indexer      = indexer
-                        st.session_state.index_report = report
+            # ── 컬렉션 현황 (세션 복구: indexer 없으면 stats 조회용으로 초기화)
+            indexer_obj = st.session_state.get("indexer")
+            if indexer_obj is None:
+                try:
+                    indexer_obj = AdvancedRAGIndexer(
+                        api_key=api_key,
+                        chroma_dir=CHROMA_DIR,
+                        data_dir=DATA_DIR,
+                        rerank=st.session_state.get("rerank_enabled", True),
+                    )
+                    st.session_state.indexer = indexer_obj
+                except Exception:
+                    indexer_obj = None
+            stats = indexer_obj.collection_stats() if indexer_obj else {}
+            total_chunks = sum(stats.values())
 
-            if st.session_state.index_report:
-                rpt = st.session_state.index_report
-                st.markdown(f"""
-                <small>
-                신규 <b>{rpt.indexed}</b>청크 &nbsp;|&nbsp;
-                스킵 <b>{rpt.skipped}</b>건 &nbsp;|&nbsp;
-                삭제 <b>{rpt.removed}</b>청크
-                </small>""", unsafe_allow_html=True)
-                if rpt.errors:
-                    for e in rpt.errors:
-                        st.warning(e)
-
-            if st.session_state.indexer:
-                stats = st.session_state.indexer.collection_stats()
+            if total_chunks == 0:
+                st.markdown(
+                    "<small style='color:#ff6b35;'>⚠ 컬렉션이 비어 있습니다.<br>"
+                    "아래 버튼으로 인덱싱을 실행하세요.</small>",
+                    unsafe_allow_html=True,
+                )
+            else:
                 st.markdown(
                     "<small>" +
                     "  ".join(f"<b>{dt}</b>: {cnt}청크" for dt, cnt in stats.items()) +
                     "</small>",
                     unsafe_allow_html=True,
                 )
+
+            st.markdown("")
+            rerank_enabled = st.checkbox(
+                "리랭킹 활성화 (LLM Reranker)",
+                value=st.session_state.get("rerank_enabled", True),
+                help="RRF 병합 후 GPT-4o-mini 크로스-인코더로 최종 재정렬. 응답 품질 향상, 지연 소폭 증가.",
+            )
+            st.session_state.rerank_enabled = rerank_enabled
+
+            col_force, col_idx = st.columns(2)
+            with col_force:
+                force = st.checkbox("전체 재인덱싱", value=False)
+            with col_idx:
+                if st.button("인덱싱 실행", use_container_width=True):
+                    with st.spinner("Contextual Enrichment + BM25 인덱싱 중...\n(청크당 LLM 호출 — 잠시 기다려 주세요)"):
+                        new_indexer = AdvancedRAGIndexer(
+                            api_key=api_key,
+                            chroma_dir=CHROMA_DIR,
+                            data_dir=DATA_DIR,
+                            rerank=rerank_enabled,
+                        )
+                        report = new_indexer.index_directory(force=force)
+                        st.session_state.indexer      = new_indexer
+                        st.session_state.index_report = report
+                    st.rerun()
+
+            if st.session_state.index_report:
+                rpt = st.session_state.index_report
+                color = "#2d6a2d" if not rpt.errors else "#7a4f00"
+                st.markdown(f"""
+                <small style='color:{color}'>
+                ✓ 신규 <b>{rpt.indexed}</b>청크 &nbsp;|&nbsp;
+                스킵 <b>{rpt.skipped}</b>건 &nbsp;|&nbsp;
+                삭제 <b>{rpt.removed}</b>청크
+                </small>""", unsafe_allow_html=True)
+                for e in rpt.errors:
+                    st.warning(e)
         else:
             st.markdown("<small>API Key를 입력하면 인덱싱 버튼이 활성화됩니다.</small>",
                         unsafe_allow_html=True)
@@ -578,12 +630,15 @@ def main():
 
     client = OpenAI(api_key=api_key)
 
-    # 인덱서 자동 초기화 (처음 로드 시)
+    # 인덱서 객체 초기화 (처음 로드 시 — index_directory 는 사이드바 버튼으로만 실행)
     if st.session_state.indexer is None:
-        indexer = AdvancedRAGIndexer(api_key=api_key, chroma_dir=CHROMA_DIR, data_dir=DATA_DIR)
-        report  = indexer.index_directory()
-        st.session_state.indexer      = indexer
-        st.session_state.index_report = report
+        indexer = AdvancedRAGIndexer(
+            api_key=api_key,
+            chroma_dir=CHROMA_DIR,
+            data_dir=DATA_DIR,
+            rerank=st.session_state.get("rerank_enabled", True),
+        )
+        st.session_state.indexer = indexer
 
     tab_chat, tab_result = st.tabs(["💬 대화", "📋 커리큘럼"])
 
@@ -754,10 +809,19 @@ def main():
             for h in hits:
                 retrieval_counts[h.get("retrieval", "semantic")] += 1
 
+            rerank_active = st.session_state.get("rerank_enabled", True)
+            pipeline_label = (
+                "Contextual Embedding + BM25 + RRF → LLM Reranker"
+                if rerank_active else
+                "Contextual Embedding + BM25 + RRF"
+            )
             st.markdown(f"""
             <div class="rag-panel-header">
                 <span class="rag-tag">Hybrid RAG</span>
-                <h3>커리큘럼 생성에 사용된 참고 자료</h3>
+                <div>
+                    <h3 style="margin:0 0 2px;">커리큘럼 생성에 사용된 참고 자료</h3>
+                    <div style="font-size:.68rem;color:#888;">{pipeline_label}</div>
+                </div>
                 <span style="margin-left:auto;font-size:.75rem;color:#555;">
                     총 {len(hits)}청크
                     &nbsp;·&nbsp;
@@ -780,9 +844,10 @@ def main():
                     chunk_i   = meta.get("chunk_index", "")
                     total_c   = meta.get("total_chunks", "")
                     ctx_desc  = meta.get("context_desc", "")
-                    retrieval = h.get("retrieval", "semantic")
-                    rrf_score = h.get("rrf_score", 0.0)
-                    distance  = h.get("distance", 1.0)
+                    retrieval    = h.get("retrieval", "semantic")
+                    rrf_score    = h.get("rrf_score", 0.0)
+                    rerank_score = h.get("rerank_score")
+                    distance     = h.get("distance", 1.0)
 
                     type_icon = "📄" if doc_type == "pdf" else "📊"
                     meta_parts = []
@@ -817,6 +882,18 @@ def main():
 
                     score_str = f"RRF {rrf_score:.4f}" if rrf_score else f"유사도 {1 - distance:.3f}"
 
+                    rerank_html = ""
+                    if rerank_score is not None:
+                        pct = int(rerank_score * 100)
+                        rerank_html = f"""
+                        <div class="rerank-bar-wrap">
+                            <span class="rerank-bar-label">Reranker</span>
+                            <div class="rerank-bar-track">
+                                <div class="rerank-bar-fill" style="width:{pct}%"></div>
+                            </div>
+                            <span class="rerank-bar-val">{pct}</span>
+                        </div>"""
+
                     st.markdown(f"""
                     <div class="rag-chunk">
                         <div class="rag-chunk-header">
@@ -827,6 +904,7 @@ def main():
                             <span class="rag-dist">{score_str}</span>
                         </div>
                         {ctx_html}
+                        {rerank_html}
                         <div class="rag-chunk-body">{preview}</div>
                     </div>""", unsafe_allow_html=True)
             else:

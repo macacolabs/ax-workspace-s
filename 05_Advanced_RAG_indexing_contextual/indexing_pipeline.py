@@ -39,11 +39,17 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+import sys
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
 
 # ── 데이터 구조 ──────────────────────────────────────────────────────────────
@@ -612,6 +618,93 @@ def _rrf_merge(
     return sorted(scores.items(), key=lambda x: x[1], reverse=True)
 
 
+# ── Hybrid Search — Cross-encoder Reranker ───────────────────────────────────
+
+_RERANK_PROMPT = """\
+검색 쿼리와 각 문서의 관련성을 0~100 사이의 정수로 평가하세요.
+쿼리의 의미와 문서 내용의 의미적 일치도를 기준으로 평가합니다.
+반드시 JSON 형식으로만 응답하세요: {{"scores": [점수1, 점수2, ...]}}
+
+쿼리: {query}
+
+{documents}"""
+
+
+class LLMReranker:
+    """
+    GPT-4o-mini 기반 크로스-인코더 리랭커.
+
+    동작 방식:
+        RRF 병합 후 상위 후보(k * rerank_multiplier)를 단일 LLM 호출로 재평가.
+        쿼리 + 모든 후보를 한 번에 전송 → 관련성 점수(0~100) 획득 → 재정렬.
+
+    특징:
+        - 단일 API 호출로 전체 후보 일괄 평가 (latency 최소화)
+        - 실패 시 RRF 순서 그대로 반환 (graceful fallback)
+        - 각 히트에 rerank_score(0.0~1.0) 메타데이터 추가
+    """
+
+    def __init__(self, api_key: str, model: str = "gpt-4o-mini") -> None:
+        self._model = model
+        self.available = False
+        try:
+            from openai import OpenAI
+            self._client = OpenAI(api_key=api_key)
+            self.available = True
+        except Exception:
+            pass
+
+    def rerank(
+        self,
+        query: str,
+        hits: list[dict[str, Any]],
+        top_k: int,
+    ) -> list[dict[str, Any]]:
+        """
+        히트 목록을 LLM 관련성 점수로 재정렬하고 상위 top_k 반환.
+        rerank_score(float 0~1) 필드를 각 히트에 추가한다.
+        """
+        if not self.available or not hits:
+            for h in hits:
+                h.setdefault("rerank_score", None)
+            return hits[:top_k]
+
+        doc_lines = "\n\n".join(
+            f"[{i + 1}] {h['text'][:500]}"
+            for i, h in enumerate(hits)
+        )
+        try:
+            resp = self._client.chat.completions.create(
+                model=self._model,
+                messages=[{
+                    "role": "user",
+                    "content": _RERANK_PROMPT.format(
+                        query=query, documents=doc_lines
+                    ),
+                }],
+                max_tokens=256,
+                temperature=0,
+                response_format={"type": "json_object"},
+            )
+            raw_scores: list[int] = json.loads(
+                resp.choices[0].message.content
+            ).get("scores", [])
+
+            for i, h in enumerate(hits):
+                h["rerank_score"] = (
+                    max(0, min(100, raw_scores[i])) / 100.0
+                    if i < len(raw_scores)
+                    else 0.0
+                )
+            hits.sort(key=lambda x: x.get("rerank_score", 0.0), reverse=True)
+
+        except Exception:
+            for h in hits:
+                h.setdefault("rerank_score", None)
+
+        return hits[:top_k]
+
+
 # ── 메인 파이프라인 ───────────────────────────────────────────────────────────
 
 class AdvancedRAGIndexer:
@@ -653,11 +746,14 @@ class AdvancedRAGIndexer:
         overlap: int = 100,
         contextual: bool = True,
         bm25_weight: float = 0.3,
+        rerank: bool = True,
+        rerank_multiplier: int = 3,
     ):
-        self.data_dir   = data_dir
-        self._chroma_dir = chroma_dir
-        self.contextual  = contextual
-        self.bm25_weight = bm25_weight
+        self.data_dir         = data_dir
+        self._chroma_dir      = chroma_dir
+        self.contextual       = contextual
+        self.bm25_weight      = bm25_weight
+        self.rerank_multiplier = rerank_multiplier
         self.chunker  = StructureAwareChunker(chunk_size, overlap)
         self.parsers: list[DocumentParser] = [PDFParser(), ExcelParser()]
         self.manifest = IndexManifest(
@@ -671,6 +767,9 @@ class AdvancedRAGIndexer:
             api_key=api_key,
             cache_path=chroma_dir / "context_cache.json",
         ) if contextual else None
+
+        # ── LLM Reranker (Hybrid Search 핵심 단계)
+        self.reranker = LLMReranker(api_key=api_key) if rerank else None
 
         # ── BM25 인덱스 (doc_type별)
         self.bm25: dict[str, BM25Index] = {dt: BM25Index() for dt in self.COLLECTION_MAP}
@@ -703,9 +802,11 @@ class AdvancedRAGIndexer:
         """
         data_dir 내 지원 파일을 증분 인덱싱.
         force=True 이면 변경 여부 무시하고 전체 재인덱싱.
+
+        컬렉션이 비어 있으면 매니페스트 상태와 무관하게 자동으로 재인덱싱한다.
+        (컬렉션 이름 변경 등으로 인해 비어있는 경우 자동 복구)
         """
         report = IndexReport()
-
         if not self.available or not self.data_dir.exists():
             report.errors.append("RAG 비활성 (chromadb 미설치 또는 data_dir 없음)")
             return report
@@ -716,7 +817,13 @@ class AdvancedRAGIndexer:
             return report
 
         for path in files:
-            if not force and not self.manifest.is_changed(path):
+            doc_type = "pdf" if path.suffix.lower() == ".pdf" else "excel"
+            col = self._collections.get(doc_type)
+            collection_empty = col is not None and col.count() == 0
+
+            # 컬렉션이 비어 있으면 force로 처리 (DB 유실 또는 컬렉션 이름 변경 대응)
+            should_index = force or collection_empty or self.manifest.is_changed(path)
+            if not should_index:
                 report.skipped += 1
                 continue
             try:
@@ -745,12 +852,17 @@ class AdvancedRAGIndexer:
         where: dict | None = None,
     ) -> list[dict[str, Any]]:
         """
-        하이브리드 검색 (Semantic + BM25 → RRF 병합).
+        풀 파이프라인 검색:
+          ① Contextual Semantic Search (ChromaDB)
+          ② Contextual BM25 Search
+          ③ RRF 병합  →  후보 풀 (k × rerank_multiplier)
+          ④ LLM Cross-encoder Reranking  →  최종 top-k
 
         doc_types : ["pdf"], ["excel"], 또는 None(전체)
         where     : ChromaDB 메타데이터 필터
-        반환값    : [{id, text, metadata, distance, retrieval, rrf_score}, ...]
-                    retrieval: "semantic" | "bm25" | "both"
+        반환값    : [{id, text, metadata, distance, retrieval, rrf_score, rerank_score}, ...]
+                    retrieval    : "semantic" | "bm25" | "both"
+                    rerank_score : float 0~1 (reranker 비활성 시 None)
         """
         if not self.available:
             return []
@@ -758,18 +870,21 @@ class AdvancedRAGIndexer:
         targets  = doc_types or list(self.COLLECTION_MAP.keys())
         all_hits: list[dict[str, Any]] = []
 
+        # reranker가 있으면 더 많은 후보를 RRF에서 추출해 rerank 입력으로 사용
+        candidate_k = k * self.rerank_multiplier if self.reranker else k
+
         for doc_type in targets:
             col = self._collections.get(doc_type)
             if col is None or col.count() == 0:
                 continue
 
-            fetch_n = min(k * 3, col.count())
+            fetch_n = min(candidate_k * 2, col.count())
 
             # ── ① Semantic 검색
             kwargs: dict[str, Any] = {
                 "query_texts": [query_text],
                 "n_results":   fetch_n,
-                "include":     ["documents", "metadatas", "distances", "ids"],
+                "include":     ["documents", "metadatas", "distances"],
             }
             if where:
                 kwargs["where"] = where
@@ -784,27 +899,28 @@ class AdvancedRAGIndexer:
                 sem_id_set.add(cid)
 
             # ── ② BM25 검색
-            bm25_hits = self.bm25[doc_type].search(query_text, k=fetch_n)
+            bm25_hits   = self.bm25[doc_type].search(query_text, k=fetch_n)
             bm25_id_set = {cid for cid, _ in bm25_hits}
 
-            # ── ③ RRF 병합
-            merged = _rrf_merge(
+            # ── ③ RRF 병합 → 후보 풀
+            merged  = _rrf_merge(
                 sem_hits, bm25_hits,
                 semantic_w=1.0 - self.bm25_weight,
                 bm25_w=self.bm25_weight,
             )
-
-            # ── ④ 상위 k개 결과 조합 (BM25 전용 히트는 ChromaDB에서 fetch)
             sem_map = {h["id"]: h for h in sem_hits}
-            top_ids = [cid for cid, _ in merged[:k]]
+            top_ids = [cid for cid, _ in merged[:candidate_k]]
 
+            # BM25 전용 히트 — ChromaDB에서 원문 fetch
             extra_ids = [cid for cid in top_ids if cid not in sem_map]
             if extra_ids:
                 extra = col.get(ids=extra_ids, include=["documents", "metadatas"])
                 for cid, doc, meta in zip(
                     extra["ids"], extra["documents"], extra["metadatas"]
                 ):
-                    sem_map[cid] = {"id": cid, "text": doc, "metadata": meta, "distance": 1.0}
+                    sem_map[cid] = {
+                        "id": cid, "text": doc, "metadata": meta, "distance": 1.0,
+                    }
 
             rrf_map = dict(merged)
             for cid in top_ids:
@@ -813,12 +929,25 @@ class AdvancedRAGIndexer:
                 h = sem_map[cid].copy()
                 in_sem  = cid in sem_id_set
                 in_bm25 = cid in bm25_id_set
-                h["retrieval"]  = "both" if (in_sem and in_bm25) else ("semantic" if in_sem else "bm25")
-                h["rrf_score"]  = rrf_map.get(cid, 0.0)
+                h["retrieval"] = (
+                    "both" if (in_sem and in_bm25) else
+                    ("semantic" if in_sem else "bm25")
+                )
+                h["rrf_score"] = rrf_map.get(cid, 0.0)
                 all_hits.append(h)
 
+        # 전체 후보 RRF 점수 내림차순 정렬
         all_hits.sort(key=lambda x: x["rrf_score"], reverse=True)
-        return all_hits[:k]
+
+        # ── ④ Hybrid Search — LLM Cross-encoder Reranking
+        if self.reranker and self.reranker.available and all_hits:
+            all_hits = self.reranker.rerank(query_text, all_hits[:candidate_k], top_k=k)
+        else:
+            for h in all_hits:
+                h.setdefault("rerank_score", None)
+            all_hits = all_hits[:k]
+
+        return all_hits
 
     def collection_stats(self) -> dict[str, int]:
         """각 컬렉션의 청크 수 반환."""
@@ -869,7 +998,10 @@ class AdvancedRAGIndexer:
                 (s.heading + "\n" if s.heading else "") + s.content
                 for s in sections
             )
-            print(f"  [Contextual] {path.name} — {len(unique)}청크 맥락 생성 중...")
+            try:
+                print(f"  [Contextual] {path.name} - {len(unique)} chunks enriching...")
+            except Exception:
+                pass
             unique = self.enricher.enrich_batch(doc_full_text, unique)
 
         # 5. 배치 upsert (100건씩)
