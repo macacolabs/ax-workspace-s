@@ -5,7 +5,7 @@ import json
 from typing import Any
 
 from .base import BaseAgent, load_prompt
-from ..evaluation.schema import (
+from evaluation.schema import (
     CheckStatus,
     CodeCheck,
     CodeValidationResult,

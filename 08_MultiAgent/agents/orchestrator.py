@@ -8,7 +8,7 @@ from .base import BaseAgent, load_prompt
 from .rag_agent import RAGAgent
 from .curriculum_agent import CurriculumGeneratorAgent
 from .validator_agent import ValidatorAgent
-from ..evaluation.schema import AgentProgress, OrchestratorResult, ValidationReport
+from evaluation.schema import AgentProgress, OrchestratorResult, ValidationReport
 
 _MAX_REGEN = 3
 _RAG_QUERIES = [
